@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { deleteComment, updateComment } from "../../../../apis/comment";
 import { createProductComment, getProductComments } from "../../../../apis/products";
 import IconBack from "../../../../assets/images/items/ic_back.svg";
@@ -6,7 +7,7 @@ import useAsync from "../../../../hooks/useAsync";
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem";
 
-export default function ItemDetailComments({ productId, onBackClick }) {
+export default function ItemDetailComments({ productId }) {
   const { value: commentDetails, setValue: setCommentDetails } = useAsync(
     () => getProductComments(productId),
     [productId]
@@ -59,10 +60,10 @@ export default function ItemDetailComments({ productId, onBackClick }) {
         </div>
       )}
       <div className="display-flex justify-center">
-        <button className="display-flex gap-8" id="btn-back" onClick={onBackClick}>
+        <Link to="/items" className="button display-flex gap-8" id="btn-back">
           <div>목록으로 돌아가기</div>
           <img src={IconBack} alt="목록으로 돌아가기 버튼 아이콘" />
-        </button>
+        </Link>
       </div>
     </section>
   );

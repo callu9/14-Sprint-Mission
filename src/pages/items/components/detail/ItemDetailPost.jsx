@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   addToFavorites,
   deleteProduct,
@@ -16,11 +16,11 @@ import useAsync from "../../../../hooks/useAsync";
 import { formatDate, formatPrice } from "../../../../utils/products";
 import MoreModal from "./MoreModal";
 
-export default function ItemDetailPost({ productId, onTagClick }) {
+export default function ItemDetailPost({ productId }) {
   const user = useUser();
   const clickRef = useRef();
   const navigate = useNavigate();
-  const [openFg, setOpenFg] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { value: detail = {}, setValue: setDetail } = useAsync(
     () => getProductDetail(productId),
     [productId]
@@ -28,7 +28,7 @@ export default function ItemDetailPost({ productId, onTagClick }) {
 
   useEffect(() => {
     const handleClick = (e) => {
-      if (!clickRef.current?.contains(e.target)) setOpenFg(false);
+      if (!clickRef.current?.contains(e.target)) setIsOpen(false);
     };
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
@@ -65,7 +65,7 @@ export default function ItemDetailPost({ productId, onTagClick }) {
           <div className="display-flex justify-sides align-upper">
             <h1 className="text-2xl">{detail.name}</h1>
             {user?.nickname === detail?.ownerNickname && (
-              <button className="icon-wrapper" onClick={() => setOpenFg(true)}>
+              <button className="icon-wrapper" onClick={() => setIsOpen(true)}>
                 <img src={IconMore} alt="더보기 버튼 이미지" />
               </button>
             )}
@@ -90,9 +90,9 @@ export default function ItemDetailPost({ productId, onTagClick }) {
             <div className="text-lg text-semibold">상품 태그</div>
             <div className="display-flex justify-left gap-8" id="tag-list">
               {detail.tags?.map((tag, idx) => (
-                <span key={`tag-${idx}`} id="tag" onClick={() => onTagClick(tag)}>
+                <Link to={`/items?keyword=${tag}`} key={`tag-${idx}`} id="tag">
                   #{tag}
-                </span>
+                </Link>
               ))}
             </div>
           </section>
@@ -121,7 +121,7 @@ export default function ItemDetailPost({ productId, onTagClick }) {
           </button>
         </div>
       </div>
-      {openFg && (
+      {isOpen && (
         <MoreModal onUpdate={handleUpdateClick} onDelete={handleDeleteClick} ref={clickRef} />
       )}
     </article>
